@@ -20,10 +20,42 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to the study spots application." });
   });
   
+  require("./app/routes/tutorial.routes")(app);
   // set port, listen for requests
   const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
   });
+
+  const dbConfig = require("../config/db.config.js");
+
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+
+const db = {};
+db.mongoose = mongoose;
+db.url = dbConfig.url;
+db.tutorials = require("./tutorial.model.js")(mongoose);
+
+module.exports = db;
+
+const db = require("./app/models");
+db.mongoose
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Connected to the database!");
+  })
+  .catch(err => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
+  });
+
+
+
+  
+  
 
   
